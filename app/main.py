@@ -11,7 +11,12 @@ def handle_exit(args: list) -> None:
 def handle_not_found(command: str) -> None:
     """Handle the command not found."""
     sys.stderr.write(f"{command}: command not found\n")
+    sys.stderr.flush()
 
+def handle_echo(args: list) -> None:
+    """Handle the echo command."""
+    sys.stdout.write(" ".join(args) + "\n")
+    sys.stdout.flush()
 
 def print_prompt() -> None:
     """Print the prompt."""
@@ -23,6 +28,7 @@ def get_commands() -> dict:
     """Get the list of commands."""
     return {
         "exit": handle_exit,
+        "echo": handle_echo
     }
 
 
