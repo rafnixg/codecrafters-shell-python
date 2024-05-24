@@ -1,6 +1,22 @@
 """Main module of the app."""
 
 import sys
+import os
+from pathlib import Path
+
+
+def check_command(command: str) -> bool:
+    """Check if the command exists in the PATH."""
+    return get_command_path(command) is not None
+
+
+def get_command_path(command: str) -> str:
+    """Get the command path."""
+    for path in os.environ["PATH"].split(os.pathsep):
+        command_path = Path(path) / command
+        if command_path.exists():
+            return str(command_path)
+    return None
 
 
 def handle_exit(args: list) -> None:
@@ -25,8 +41,11 @@ def handle_type(args: list) -> None:
     command = args[0]
     if command in get_commands():
         sys.stdout.write(f"{command} is a shell builtin\n")
+    elif check_command(command):
+        command_path = get_command_path(command)
+        sys.stdout.write(f"{command} is {command_path}\n")
     else:
-        sys.stdout.write(f"{command} not found\n")
+        sys.stdout.write(f"{command}: not found\n")
 
 
 def print_prompt() -> None:
