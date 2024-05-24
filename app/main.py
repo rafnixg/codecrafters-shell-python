@@ -1,7 +1,9 @@
 """Main module of the app."""
 
-import sys
 import os
+import subprocess
+import sys
+
 from pathlib import Path
 
 
@@ -17,6 +19,13 @@ def get_command_path(command: str) -> str:
         if command_path.exists():
             return str(command_path)
     return None
+
+
+def run_os_command(command: str, args: list) -> None:
+    """Run an external command from the PATH with the given arguments"""
+    command_path = get_command_path(command)
+    subprocess.run([command_path] + args, check=True)
+    sys.stdout.flush()
 
 
 def handle_exit(args: list) -> None:
@@ -79,11 +88,16 @@ def main():
         if not command:
             continue
         # Check if the command is in the list of commands
-        if command not in command_list:
+        if command in command_list:
+            # Execute the command
+            command_list[command](args)
+            continue
+        # Check if the command exists in the PATH
+        if not check_command(command):
             handle_not_found(command)
             continue
-        # Execute the command
-        command_list[command](args)
+        # Run the os command
+        run_os_command(command, args)
 
 
 if __name__ == "__main__":
