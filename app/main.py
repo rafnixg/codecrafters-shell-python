@@ -13,10 +13,21 @@ def handle_not_found(command: str) -> None:
     sys.stderr.write(f"{command}: command not found\n")
     sys.stderr.flush()
 
+
 def handle_echo(args: list) -> None:
     """Handle the echo command."""
     sys.stdout.write(" ".join(args) + "\n")
     sys.stdout.flush()
+
+
+def handle_type(args: list) -> None:
+    """Handle the type command."""
+    command = args[0]
+    if command in get_commands():
+        sys.stdout.write(f"{command} is a shell builtin\n")
+    else:
+        sys.stdout.write(f"{command} not found\n")
+
 
 def print_prompt() -> None:
     """Print the prompt."""
@@ -26,10 +37,7 @@ def print_prompt() -> None:
 
 def get_commands() -> dict:
     """Get the list of commands."""
-    return {
-        "exit": handle_exit,
-        "echo": handle_echo
-    }
+    return {"exit": handle_exit, "echo": handle_echo, "type": handle_type}
 
 
 def get_user_input() -> tuple[str, list[str]]:
